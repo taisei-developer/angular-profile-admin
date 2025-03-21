@@ -1,5 +1,7 @@
-import { Component } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { User } from './user';
 
 @Component({
   selector: 'app-root',
@@ -9,5 +11,15 @@ import { RouterOutlet } from '@angular/router';
   styleUrl: './app.component.css'
 })
 export class AppComponent {
-  title = 'angular-profile-admin';
+  private readonly http = inject(HttpClient);
+
+  users: User[] = [];
+
+  ngOnInit() {
+    this.http
+      .get<{ data: User[] }>('https://reqres.in/api/users')
+      .subscribe((resp) => {
+        this.users = resp.data;
+      })
+  }
 }
